@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Tabs, DatePicker, Button, Table, Select, Switch, Row, Col } from 'antd';
-import { FileText, FileSpreadsheet, PieChart, BarChart2, TrendingUp, TrendingDown, Users, Percent } from 'lucide-react';
-import dayjs from 'dayjs';
+import React, { useState } from 'react';
+import { Card, Tabs, DatePicker } from 'antd';
 
 const { RangePicker } = DatePicker;
 

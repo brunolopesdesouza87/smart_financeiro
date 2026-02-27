@@ -1,9 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { PlusCircle } from 'lucide-react';
-import { Modal, Form, Input, Select, Checkbox, Radio, message } from 'antd';
-import { Card, Tabs, DatePicker, Table, Tooltip, Collapse, Switch } from 'antd';
-import { Bar, Line } from 'react-chartjs-2';
-import { supabase } from '../lib/supabase';
+import React, { useState } from 'react';
+import { Tabs, DatePicker, Switch } from 'antd';
 import dayjs from 'dayjs';
 
 // TODO: importar tipos corretos e hooks de dados
@@ -25,6 +21,15 @@ const CashFlowPage: React.FC = () => {
   // Estado do período
   const [period, setPeriod] = useState<'week'|'month'|'30days'|'custom'>('week');
   const [customRange, setCustomRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]|null>(null);
+
+  // Corrige tipo do onChange do RangePicker
+  const handleRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
+    if (dates && dates[0] && dates[1]) {
+      setCustomRange([dates[0], dates[1]]);
+    } else {
+      setCustomRange(null);
+    }
+  };
   const [toggle, setToggle] = useState<'real'|'proj'|'both'>('real');
 
   // Modal lançamento manual
@@ -136,7 +141,7 @@ const CashFlowPage: React.FC = () => {
         {period === 'custom' && (
           <DatePicker.RangePicker
             value={customRange}
-            onChange={setCustomRange}
+            onChange={handleRangeChange}
             format="DD/MM/YYYY"
             style={{ marginLeft: 16 }}
           />

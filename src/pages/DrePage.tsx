@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Table, DatePicker, Button, Switch, Select, message } from 'antd';
-import { FileText, FileSpreadsheet, BarChart2 } from 'lucide-react';
+import { Card, Table, DatePicker, Button, Select } from 'antd';
 import dayjs from 'dayjs';
 
 const monthOptions = Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: dayjs().month(i).format('MMMM') }));

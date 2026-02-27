@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Card, Row, Col, Table, Button, Skeleton, Progress, Tag, Tooltip } from 'antd';
-import { TrendingUp, TrendingDown, DollarSign, PieChart, AlertCircle, CheckCircle, ArrowRight } from 'lucide-react';
+import React from 'react';
+import { Card, Row, Col, Tag } from 'antd';
+import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 
 const DashboardPage: React.FC = () => {
   // TODO: Buscar dados reais via Supabase (Promise.all)

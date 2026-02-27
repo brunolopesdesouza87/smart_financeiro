@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Table, Modal, Form, Input, Select, Switch, Row, Col } from 'antd';
+import { Card, Button, Table, Row, Col } from 'antd';
 import { PlusCircle } from 'lucide-react';
 
 const FinancialAccountsPage: React.FC = () => {
