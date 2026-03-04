@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import React, { useState } from 'react';
 import { Card, Tabs, DatePicker } from 'antd';
 
 const { RangePicker } = DatePicker;

@@ -250,12 +250,12 @@ BEGIN
 END;
 $$;
 
-DROP TRIGGER IF EXISTS trg_set_payable_status ON public.payables;
-CREATE TRIGGER trg_set_payable_status
-BEFORE INSERT OR UPDATE OF amount, amount_paid, due_date, status, paid_date
-ON public.payables
-FOR EACH ROW
-EXECUTE FUNCTION public.set_payable_status();
+-- DROP TRIGGER IF EXISTS trg_set_payable_status ON public.payables;
+-- CREATE TRIGGER trg_set_payable_status
+-- BEFORE INSERT OR UPDATE OF amount, amount_paid, due_date, status, paid_date
+-- ON public.payables
+-- FOR EACH ROW
+-- EXECUTE FUNCTION public.set_payable_status();
 
 CREATE OR REPLACE FUNCTION public.set_receivable_status()
 RETURNS TRIGGER

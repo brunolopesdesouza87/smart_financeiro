@@ -1,4 +1,4 @@
-/* Tabela de contas a receber: responsividade tipo card no mobile */
+﻿/* Tabela de contas a receber: responsividade tipo card no mobile */
 @media (max-width: 600px) {
   .table-wrap table, .table-wrap thead, .table-wrap tbody, .table-wrap tr {
     display: block;
@@ -9,10 +9,10 @@
   }
   .table-wrap tr {
     margin-bottom: 1rem;
-    border-radius: 10px;
+    border-radius: 1rem;
     background: #fff;
-    box-shadow: 0 2px 8px rgba(30,58,95,0.07);
-    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(49,46,129,0.07);
+    border: 2px solid #e0e7ff;
     padding: 0.7rem 0.6rem 0.5rem 0.6rem;
   }
   .table-wrap td {
@@ -127,7 +127,7 @@
 :root {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: #0f172a;
-  background: #f4f7fb;
+  background: #f1f5f9;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -157,16 +157,18 @@ select {
 input,
 select {
   width: 100%;
-  border: 1px solid #d6deea;
-  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  border-radius: 1rem;
   padding: 0.62rem 0.72rem;
-  background: #fff;
+  background: #f8fafc;
+  transition: border-color 0.2s;
 }
 
 input:focus,
 select:focus {
-  outline: 2px solid rgba(39, 174, 96, 0.2);
-  border-color: #27ae60;
+  outline: none;
+  border-color: #4f46e5;
+  background: #fff;
 }
 
 .auth-shell {
@@ -174,29 +176,53 @@ select:focus {
   display: grid;
   place-items: center;
   padding: 1rem;
+  background: linear-gradient(135deg, #312e81 0%, #4f46e5 50%, #818cf8 100%);
 }
 
 .auth-card {
-  width: min(430px, 94vw);
+  width: min(440px, 94vw);
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  box-shadow: 0 12px 24px rgba(30, 58, 95, 0.08);
-  padding: 1rem;
+  border: 2px solid #e0e7ff;
+  border-radius: 2.5rem;
+  box-shadow: 0 24px 48px rgba(49, 46, 129, 0.12);
+  padding: 2rem;
   display: grid;
+  gap: 0.85rem;
+}
+
+.auth-brand-header {
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
+}
+
+.auth-brand-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, #4f46e5, #818cf8);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
 }
 
 .auth-card h1 {
   margin: 0;
-  color: #1e3a5f;
+  color: #312e81;
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  line-height: 1.1;
 }
 
 .auth-card code {
   display: block;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border: 2px solid #e0e7ff;
+  border-radius: 0.75rem;
   padding: 0.5rem;
   font-size: 0.83rem;
 }
@@ -215,15 +241,19 @@ select:focus {
 
 .tabs button {
   border: 0;
-  border-radius: 10px;
-  padding: 0.58rem;
-  background: #e9eff7;
-  color: #1e3a5f;
+  border-radius: 1rem;
+  padding: 0.65rem;
+  background: #ede9fe;
+  color: #4338ca;
   cursor: pointer;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .tabs button.active {
-  background: #1e3a5f;
+  background: #4f46e5;
   color: #fff;
 }
 
@@ -249,23 +279,26 @@ select:focus {
 
 .primary {
   border: 0;
-  border-radius: 10px;
-  padding: 0.68rem 0.8rem;
-  background: #1e3a5f;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  background: #4f46e5;
   color: #fff;
-  font-weight: 600;
+  font-weight: 900;
   cursor: pointer;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
 }
 
 .primary:hover {
-  background: #18314f;
+  background: #4338ca;
 }
 
 .loading-block {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #1e3a5f;
+  color: #312e81;
 }
 
 .spin {
@@ -276,12 +309,12 @@ select:focus {
 .finance-layout {
   display: flex;
   min-height: 100vh;
-  background: #f4f7fb;
+  background: #f1f5f9;
 }
 
 .sidebar {
   width: 280px;
-  background: #1e3a5f;
+  background: #312e81;
   color: #fff;
   padding: 1rem;
   display: flex;
@@ -305,7 +338,7 @@ select:focus {
     height: 100vh;
     width: 80vw;
     max-width: 320px;
-    box-shadow: 2px 0 16px rgba(30,58,95,0.13);
+    box-shadow: 2px 0 16px rgba(49,46,129,0.13);
     transition: left 0.3s;
   }
   .sidebar.open {
@@ -317,7 +350,7 @@ select:focus {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(30,58,95,0.25);
+    background: rgba(49,46,129,0.25);
     z-index: 99;
     border: none;
   }
@@ -335,17 +368,21 @@ select:focus {
 }
 
 .brand-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: #27ae60;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: #4f46e5;
   display: grid;
   place-items: center;
+  flex-shrink: 0;
 }
 
 .brand-area h1 {
   margin: 0;
   font-size: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 
 .brand-area p {
@@ -363,7 +400,7 @@ select:focus {
 .sub-item {
   border: 0;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 0.875rem;
   padding: 0.62rem 0.7rem;
   display: flex;
   align-items: center;
@@ -372,6 +409,7 @@ select:focus {
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   text-align: left;
+  font-weight: 600;
 }
 
 .nav-item:hover,
@@ -381,7 +419,7 @@ select:focus {
 
 .nav-item.active,
 .sub-item.active {
-  background: #27ae60;
+  background: #4f46e5;
   color: #fff;
 }
 
@@ -412,8 +450,8 @@ select:focus {
 
 .layout-header {
   background: #fff;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #f1f5f9;
+  padding: 0.85rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -421,6 +459,7 @@ select:focus {
   position: sticky;
   top: 0;
   z-index: 20;
+  box-shadow: 0 2px 8px rgba(49, 46, 129, 0.06);
 }
 
 @media (max-width: 768px) {
@@ -434,12 +473,13 @@ select:focus {
     padding: 0.5rem;
   }
 }
-}
 
 .layout-header h2 {
   margin: 0;
-  color: #1e3a5f;
+  color: #312e81;
   font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
 .layout-header p {
@@ -450,13 +490,14 @@ select:focus {
 
 .menu-toggle {
   display: none;
-  border: 1px solid #d6deea;
+  border: 2px solid #e0e7ff;
   background: #fff;
-  border-radius: 10px;
-  width: 36px;
-  height: 36px;
+  border-radius: 0.75rem;
+  width: 38px;
+  height: 38px;
   place-items: center;
   cursor: pointer;
+  color: #4338ca;
 }
 
 @media (max-width: 768px) {
@@ -466,15 +507,17 @@ select:focus {
 }
 
 .logout-btn {
-  border: 1px solid #d6deea;
+  border: 2px solid #e0e7ff;
   background: #fff;
-  border-radius: 10px;
-  padding: 0.5rem 0.7rem;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.8rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: #1e3a5f;
+  color: #4338ca;
   cursor: pointer;
+  font-weight: 700;
+  font-size: 0.82rem;
 }
 
 .layout-main {
@@ -483,30 +526,31 @@ select:focus {
 
 .page-card {
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  box-shadow: 0 8px 18px rgba(30, 58, 95, 0.05);
-  padding: 1rem;
+  border: 2px solid #f1f5f9;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(49, 46, 129, 0.08);
+  padding: 1.25rem;
 }
 
 @media (max-width: 600px) {
   .page-card {
     padding: 0.6rem;
-    border-radius: 10px;
+    border-radius: 1rem;
   }
   .ant-card {
-    border-radius: 10px;
+    border-radius: 1rem;
   }
   .ant-btn {
     font-size: 0.98rem;
     padding: 0.5rem 0.7rem;
   }
 }
-}
 
 .page-card h3 {
   margin: 0 0 0.35rem;
-  color: #1e3a5f;
+  color: #312e81;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
 .page-card p {
@@ -527,9 +571,10 @@ select:focus {
 
 .summary-card {
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 0.8rem;
+  border: 2px solid #f1f5f9;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 16px rgba(49, 46, 129, 0.07);
+  padding: 1rem;
 }
 
 .summary-label {
@@ -543,13 +588,13 @@ select:focus {
 .summary-card strong {
   display: block;
   margin-top: 0.45rem;
-  color: #1e3a5f;
+  color: #312e81;
   font-size: 1.25rem;
 }
 
 .summary-card.received strong,
 .summary-card.open strong {
-  color: #27ae60;
+  color: #4f46e5;
 }
 
 .summary-card.overdue strong {
@@ -592,10 +637,14 @@ select:focus {
 
 .accent-btn {
   border: 0;
-  border-radius: 10px;
-  background: #27ae60;
+  border-radius: 1rem;
+  background: #4f46e5;
   color: #fff;
-  padding: 0.62rem 0.8rem;
+  padding: 0.65rem 1rem;
+  font-weight: 900;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -603,7 +652,7 @@ select:focus {
 }
 
 .accent-btn:hover {
-  background: #209150;
+  background: #4338ca;
 }
 
 .receivable-filters {
@@ -617,10 +666,11 @@ select:focus {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid #d6deea;
-  background: #fff;
-  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 1rem;
   padding: 0 0.6rem;
+  transition: border-color 0.2s;
 }
 
 .search-box input {
@@ -633,12 +683,13 @@ select:focus {
 }
 
 .ghost-btn {
-  border: 1px solid #d6deea;
+  border: 2px solid #e0e7ff;
   background: #fff;
-  color: #1e3a5f;
-  border-radius: 10px;
+  color: #4338ca;
+  border-radius: 1rem;
   padding: 0.62rem 0.8rem;
   cursor: pointer;
+  font-weight: 700;
 }
 
 .ghost-btn:hover {
@@ -646,7 +697,7 @@ select:focus {
 }
 
 .import-btn {
-  background: #1e3a5f;
+  background: #312e81;
 }
 
 .sort-btn {
@@ -659,7 +710,7 @@ select:focus {
 }
 
 .sort-btn:hover {
-  color: #1e3a5f;
+  color: #312e81;
 }
 
 .table-wrap {
@@ -699,7 +750,7 @@ th {
 
 .status-pending {
   background: #e8eef7;
-  color: #1e3a5f;
+  color: #312e81;
 }
 
 .status-received {
@@ -725,7 +776,7 @@ th {
   padding: 0.12rem 0.4rem;
   border-radius: 999px;
   background: #e8eef7;
-  color: #1e3a5f;
+  color: #312e81;
 }
 
 .row-overdue {
@@ -738,7 +789,7 @@ th {
 
 .group-row td {
   background: #f8fafc;
-  color: #1e3a5f;
+  color: #312e81;
   border-top: 1px solid #dbe5f3;
 }
 
@@ -764,7 +815,7 @@ th {
 
 .icon-btn.edit {
   background: #e9eff7;
-  color: #1e3a5f;
+  color: #312e81;
 }
 
 .icon-btn.danger {
@@ -792,7 +843,7 @@ th {
 
 .skeleton-row {
   height: 40px;
-  border-radius: 10px;
+  border-radius: 0.75rem;
   background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
@@ -813,11 +864,12 @@ th {
   max-height: calc(100vh - 2rem);
   overflow-y: auto;
   background: #fff;
-  border-radius: 14px;
-  border: 1px solid #d6deea;
-  padding: 1rem;
+  border-radius: 2rem;
+  border: 2px solid #e0e7ff;
+  padding: 1.5rem;
   display: grid;
-  gap: 0.7rem;
+  gap: 0.8rem;
+  box-shadow: 0 24px 48px rgba(49, 46, 129, 0.14);
 }
 
 .modal-card label {
@@ -830,11 +882,13 @@ th {
 .modal-card input,
 .modal-card select,
 .modal-card textarea {
-  border: 1px solid #d6deea;
-  border-radius: 10px;
+  border: 2px solid #e0e7ff;
+  border-radius: 0.75rem;
   padding: 0.58rem 0.65rem;
   font: inherit;
   color: #0f172a;
+  background: #f8fafc;
+  transition: border-color 0.2s;
 }
 
 .modal-grid {
@@ -865,14 +919,14 @@ th {
 }
 
 .installment-preview {
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border: 2px solid #e0e7ff;
+  border-radius: 0.875rem;
   padding: 0.7rem;
   background: #f8fafc;
 }
 
 .installment-preview strong {
-  color: #1e3a5f;
+  color: #312e81;
   font-size: 0.82rem;
 }
 
@@ -922,7 +976,7 @@ th {
 
 .drawer-header h3 {
   margin: 0;
-  color: #1e3a5f;
+  color: #312e81;
 }
 
 .drawer-content {
@@ -953,8 +1007,8 @@ th {
 .drawer-due-options input,
 .drawer-filters input,
 .drawer-filters select {
-  border: 1px solid #d6deea;
-  border-radius: 10px;
+  border: 2px solid #e0e7ff;
+  border-radius: 0.75rem;
   padding: 0.52rem 0.6rem;
 }
 
@@ -1060,3 +1114,4 @@ button:disabled {
     transform: rotate(360deg);
   }
 }
+

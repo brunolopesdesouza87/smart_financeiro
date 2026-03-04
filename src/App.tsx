@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { LoaderCircle } from 'lucide-react'
+import { LoaderCircle, Wallet } from 'lucide-react'
 import { AppLayout } from './components/layout/AppLayout'
 import { ReceivablesPage } from './pages/ReceivablesPage'
 import { PayablesPage } from './pages/PayablesPage'
@@ -14,8 +14,6 @@ import PlanoDeContasPage from './pages/PlanoDeContasPage'
 import CostCentersPage from './pages/CostCentersPage'
 import { hasSupabaseConfig, supabase } from './lib/supabase'
 import type { NavKey } from './types/finance'
-
-type AuthMode = 'login' | 'register' | 'reset'
 
 const navPathMap: Record<NavKey, string> = {
   dashboard: '/financeiro/dashboard',
@@ -37,8 +35,8 @@ function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [loadingSession, setLoadingSession] = useState(true)
   const [loadingAuthAction, setLoadingAuthAction] = useState(false)
+  const [subscriptionBlocked, setSubscriptionBlocked] = useState(false)
 
-  const [authMode, setAuthMode] = useState<AuthMode>('login')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
   const [authMessage, setAuthMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
@@ -62,6 +60,22 @@ function App() {
     }
   }
 
+  const checkUserSubscription = async (userId: string): Promise<boolean> => {
+    if (!supabase) return false
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('organization_id')
+      .eq('id', userId)
+      .single()
+    if (!profile?.organization_id) return false
+    const { data: subscription } = await supabase
+      .from('Subscriptions')
+      .select('status')
+      .eq('organization_id', profile.organization_id)
+      .single()
+    return subscription?.status === 'active'
+  }
+
   useEffect(() => {
     if (!supabase) {
       setLoadingSession(false)
@@ -72,6 +86,16 @@ function App() {
 
     const loadSession = async () => {
       const { data } = await client.auth.getSession()
+      if (data.session) {
+        const isActive = await checkUserSubscription(data.session.user.id)
+        if (!isActive) {
+          setSubscriptionBlocked(true)
+          await client.auth.signOut()
+          setAuthMessage({ type: 'error', text: 'Sua assinatura está inativa ou expirada. Entre em contato com o suporte para renovar.' })
+          setLoadingSession(false)
+          return
+        }
+      }
       setSession(data.session)
       setLoadingSession(false)
     }
@@ -103,32 +127,17 @@ function App() {
         return
       }
 
-      if (authMode === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) throw error
-      }
-
-      if (authMode === 'register') {
-        if (password.length < 6) {
-          setAuthMessage({ type: 'error', text: 'A senha deve ter no mínimo 6 caracteres.' })
+      const { data: loginData, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) throw error
+      if (loginData.user) {
+        const isActive = await checkUserSubscription(loginData.user.id)
+        if (!isActive) {
+          setSubscriptionBlocked(true)
+          await supabase.auth.signOut()
+          setAuthMessage({ type: 'error', text: 'Sua assinatura está inativa ou expirada. Entre em contato com o suporte para renovar.' })
           return
         }
-
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin },
-        })
-        if (error) throw error
-        setAuthMessage({ type: 'success', text: 'Cadastro realizado! Verifique seu e-mail para confirmar o acesso.' })
-      }
-
-      if (authMode === 'reset') {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin,
-        })
-        if (error) throw error
-        setAuthMessage({ type: 'success', text: 'Link de recuperação enviado para seu e-mail.' })
+        setSubscriptionBlocked(false)
       }
     } catch (error: any) {
       setAuthMessage({ type: 'error', text: error.message || 'Falha na autenticação.' })
@@ -140,7 +149,6 @@ function App() {
   const handleLogout = async () => {
     if (!supabase) return
     await supabase.auth.signOut()
-    setAuthMode('login')
     setAuthPassword('')
   }
 
@@ -182,7 +190,10 @@ function App() {
     return (
       <div className="auth-shell">
         <div className="auth-card">
-          <h1>SmartFinanceiro</h1>
+          <div className="auth-brand-header">
+            <div className="auth-brand-icon"><Wallet size={28} /></div>
+            <h1>SmartFinanceiro</h1>
+          </div>
           <p className="muted">Configure as variáveis de ambiente para conectar ao Supabase.</p>
           <code>VITE_SUPABASE_URL</code>
           <code>VITE_SUPABASE_ANON_KEY</code>
@@ -202,18 +213,15 @@ function App() {
     )
   }
 
-  if (!session) {
+  if (!session || subscriptionBlocked) {
     return (
       <div className="auth-shell">
         <form className="auth-card" onSubmit={handleAuthAction}>
-          <h1>SmartFinanceiro</h1>
-          <p className="muted">Acesso separado para o módulo financeiro.</p>
-
-          <div className="tabs">
-            <button type="button" className={authMode === 'login' ? 'active' : ''} onClick={() => setAuthMode('login')}>Entrar</button>
-            <button type="button" className={authMode === 'register' ? 'active' : ''} onClick={() => setAuthMode('register')}>Cadastrar</button>
-            <button type="button" className={authMode === 'reset' ? 'active' : ''} onClick={() => setAuthMode('reset')}>Recuperar</button>
+          <div className="auth-brand-header">
+            <div className="auth-brand-icon"><Wallet size={28} /></div>
+            <h1>SmartFinanceiro</h1>
           </div>
+          <p className="muted">Acesso separado para o módulo financeiro.</p>
 
           <label>
             E-mail
@@ -226,29 +234,21 @@ function App() {
             />
           </label>
 
-          {authMode !== 'reset' && (
-            <label>
-              Senha
-              <input
-                type="password"
-                value={authPassword}
-                onChange={(event) => setAuthPassword(event.target.value)}
-                placeholder="******"
-                required
-              />
-            </label>
-          )}
+          <label>
+            Senha
+            <input
+              type="password"
+              value={authPassword}
+              onChange={(event) => setAuthPassword(event.target.value)}
+              placeholder="******"
+              required
+            />
+          </label>
 
           {authMessage && <p className={`feedback ${authMessage.type}`}>{authMessage.text}</p>}
 
           <button type="submit" className="primary" disabled={loadingAuthAction}>
-            {loadingAuthAction
-              ? 'Aguarde...'
-              : authMode === 'login'
-                ? 'Entrar'
-                : authMode === 'register'
-                  ? 'Criar conta'
-                  : 'Enviar link'}
+            {loadingAuthAction ? 'Aguarde...' : 'Entrar'}
           </button>
         </form>
       </div>
