@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { CircleDollarSign, Clock3, Copy, PanelRightOpen, Pencil, PlusCircle, Search, TriangleAlert, Trash2, X } from 'lucide-react'
+import { CircleDollarSign, Clock3, Copy, Pencil, PlusCircle, Search, TriangleAlert, Trash2, X } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { z } from 'zod'
 import { supabase } from '../lib/supabase'
@@ -64,11 +64,11 @@ const recurrenceFrequencyOptions: Array<{ value: RecurrenceFrequency; label: str
 const payableFormSchema = z
   .object({
     mode: z.enum(['create', 'edit']),
-    description: z.string().trim().min(1, 'Descrição é obrigatória.'),
+    description: z.string().trim().min(1, 'DescriÃ§Ã£o Ã© obrigatÃ³ria.'),
     supplierName: z.string().optional(),
-    amount: z.string().min(1, 'Valor é obrigatório.'),
-    dueDate: z.string().min(1, 'Data de vencimento é obrigatória.'),
-    categoryId: z.string().min(1, 'Categoria é obrigatória.'),
+    amount: z.string().min(1, 'Valor Ã© obrigatÃ³rio.'),
+    dueDate: z.string().min(1, 'Data de vencimento Ã© obrigatÃ³ria.'),
+    categoryId: z.string().min(1, 'Categoria Ã© obrigatÃ³ria.'),
     costCenterId: z.string().optional(),
     paymentAccountId: z.string().optional(),
     notes: z.string().optional(),
@@ -87,7 +87,7 @@ const payableFormSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['dueDate'],
-        message: 'A data de vencimento não pode ser no passado para novos registros.',
+        message: 'A data de vencimento nÃ£o pode ser no passado para novos registros.',
       })
     }
 
@@ -96,7 +96,7 @@ const payableFormSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['recurrenceFrequency'],
-          message: 'Selecione a frequência da recorrência.',
+          message: 'Selecione a frequÃªncia da recorrÃªncia.',
         })
       }
 
@@ -104,7 +104,7 @@ const payableFormSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['recurrenceStartDate'],
-          message: 'Data de início é obrigatória para despesa recorrente.',
+          message: 'Data de inÃ­cio Ã© obrigatÃ³ria para despesa recorrente.',
         })
       }
 
@@ -112,7 +112,7 @@ const payableFormSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['recurrenceStartDate'],
-          message: 'A data de início não pode ser no passado para novos registros.',
+          message: 'A data de inÃ­cio nÃ£o pode ser no passado para novos registros.',
         })
       }
 
@@ -120,16 +120,16 @@ const payableFormSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['recurrenceEndDate'],
-          message: 'A data de término deve ser igual ou posterior à data de início.',
+          message: 'A data de tÃ©rmino deve ser igual ou posterior Ã  data de inÃ­cio.',
         })
       }
     }
   })
 
 const paymentFormSchema = z.object({
-  paidAmount: z.string().min(1, 'Valor pago é obrigatório.'),
-  paidDate: z.string().min(1, 'Data do pagamento é obrigatória.'),
-  accountId: z.string().min(1, 'Conta bancária é obrigatória.'),
+  paidAmount: z.string().min(1, 'Valor pago Ã© obrigatÃ³rio.'),
+  paidDate: z.string().min(1, 'Data do pagamento Ã© obrigatÃ³ria.'),
+  accountId: z.string().min(1, 'Conta bancÃ¡ria Ã© obrigatÃ³ria.'),
   receiptReference: z.string().optional(),
   notes: z.string().optional(),
 })
@@ -397,7 +397,7 @@ export function PayablesPage() {
             sourceTable: 'purchase_orders' as const,
             date: row.order_date || row.created_at?.slice(0, 10) || todayIso,
             supplierName: row.supplier_name || 'Sem fornecedor',
-            productsSummary: (itemMap.get(row.id) || []).slice(0, 3).join(', ') || 'Produtos não informados',
+            productsSummary: (itemMap.get(row.id) || []).slice(0, 3).join(', ') || 'Produtos nÃ£o informados',
             totalAmount: Number(row.total_amount ?? row.total ?? 0),
             status: row.status || 'pending',
           }))
@@ -443,7 +443,7 @@ export function PayablesPage() {
               sourceTable: 'shopping_lists' as const,
               date: row.created_at?.slice(0, 10) || todayIso,
               supplierName: row.requester_name || 'Sem fornecedor',
-              productsSummary: productsSummary || 'Produtos não informados',
+              productsSummary: productsSummary || 'Produtos nÃ£o informados',
               totalAmount,
               status: row.status || 'pending',
             }
@@ -735,7 +735,7 @@ export function PayablesPage() {
     }
 
     if (importDueMode === 'custom' && !importCustomDueDate) {
-      toast.error('Informe a data de vencimento para importação com data fixa.')
+      toast.error('Informe a data de vencimento para importaÃ§Ã£o com data fixa.')
       return
     }
 
@@ -788,13 +788,13 @@ export function PayablesPage() {
       setSelectedStockOrderIds([])
 
       if (successCount > 0) {
-        toast.success(`Importação concluída: ${successCount} ordem(ns) importada(s).`)
+        toast.success(`ImportaÃ§Ã£o concluÃ­da: ${successCount} ordem(ns) importada(s).`)
       }
       if (skippedCount > 0) {
-        toast.error(`${skippedCount} ordem(ns) não foram importadas (sem valor total ou erro de gravação).`)
+        toast.error(`${skippedCount} ordem(ns) nÃ£o foram importadas (sem valor total ou erro de gravaÃ§Ã£o).`)
       }
       if (markNotUpdatedCount > 0) {
-        toast.error(`${markNotUpdatedCount} ordem(ns) importada(s) sem flag de origem atualizada no estoque (ajuste de schema pode ser necessário).`)
+        toast.error(`${markNotUpdatedCount} ordem(ns) importada(s) sem flag de origem atualizada no estoque (ajuste de schema pode ser necessÃ¡rio).`)
       }
       if (successCount === 0 && skippedCount === 0) {
         toast.error('Nenhuma ordem foi importada.')
@@ -803,6 +803,43 @@ export function PayablesPage() {
       setIsImportingFromStock(false)
     }
   }
+
+  // Auto-sync silencioso: ordens de compra nÃ£o importadas â†’ payables
+  useEffect(() => {
+    const autoSync = async () => {
+      if (!supabase) return
+      const { data: orders } = await supabase
+        .from('purchase_orders')
+        .select('id, supplier_name, total_amount, total, order_date, created_at')
+        .order('created_at', { ascending: false })
+        .limit(200)
+
+      const { data: existing } = await supabase
+        .from('payables')
+        .select('purchase_order_id')
+        .not('purchase_order_id', 'is', null)
+
+      const importedIds = new Set((existing ?? []).map((r: any) => r.purchase_order_id))
+
+      for (const order of orders ?? []) {
+        if (importedIds.has(order.id)) continue
+        const total = Number(order.total_amount ?? order.total ?? 0)
+        if (total <= 0) continue
+        await supabase.from('payables').insert({
+          description: `Compra Estoque #${order.id.slice(0, 8)}`,
+          supplier_name: order.supplier_name ?? null,
+          amount: total,
+          amount_paid: 0,
+          due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+          status: 'pending',
+          purchase_order_id: order.id,
+          notes: 'Sincronizado automaticamente do Estoque',
+        })
+      }
+      queryClient.invalidateQueries({ queryKey: ['payables-summary'] })
+    }
+    autoSync()
+  }, [])
 
   const openCreateModal = () => {
     setEditingItem(null)
@@ -834,7 +871,7 @@ export function PayablesPage() {
       .single()
 
     if (error) {
-      toast.error(`Erro ao carregar conta para edição: ${error.message}`)
+      toast.error(`Erro ao carregar conta para ediÃ§Ã£o: ${error.message}`)
       return
     }
 
@@ -879,7 +916,7 @@ export function PayablesPage() {
       : []
 
     if (values.isRecurring && recurrenceDates.length === 0) {
-      toast.error('Não foi possível gerar as parcelas da recorrência com os dados informados.')
+      toast.error('NÃ£o foi possÃ­vel gerar as parcelas da recorrÃªncia com os dados informados.')
       return
     }
 
@@ -930,7 +967,7 @@ export function PayablesPage() {
             recurrence_period: recurrenceFrequency,
             notes: [
               values.notes?.trim() || '',
-              `Recorrência ${index + 1}/${recurrenceDates.length}`,
+              `RecorrÃªncia ${index + 1}/${recurrenceDates.length}`,
             ].filter(Boolean).join('\n'),
           }))
 
@@ -982,7 +1019,7 @@ export function PayablesPage() {
     }
 
     if (parsedAmount > remaining) {
-      paymentForm.setError('paidAmount', { message: 'O valor não pode ser maior que o saldo restante.' })
+      paymentForm.setError('paidAmount', { message: 'O valor nÃ£o pode ser maior que o saldo restante.' })
       return
     }
 
@@ -1080,7 +1117,7 @@ export function PayablesPage() {
     }
 
     await queryClient.invalidateQueries({ queryKey: ['payables-summary'] })
-    toast.success('Conta a pagar excluída com sucesso.')
+    toast.success('Conta a pagar excluÃ­da com sucesso.')
   }
 
   const handleDuplicate = async (item: PayableSummary) => {
@@ -1171,7 +1208,7 @@ export function PayablesPage() {
     <div className="payables-page">
       {overdueCount > 0 && (
         <div className="overdue-banner" role="alert">
-          <span>⚠️ Você tem {overdueCount} conta(s) vencida(s) totalizando {money.format(overdueTotal)}</span>
+          <span>âš ï¸ VocÃª tem {overdueCount} conta(s) vencida(s) totalizando {money.format(overdueTotal)}</span>
           <button type="button" className="ghost-btn" onClick={() => { setStatusFilter('overdue'); setPage(1) }}>
             Ver todas
           </button>
@@ -1180,7 +1217,7 @@ export function PayablesPage() {
 
       <section className="summary-grid">
         <article className="summary-card open"><div className="summary-label"><Clock3 size={16} /> Total a Pagar</div><strong>{money.format(summary.totalPending)}</strong></article>
-        <article className="summary-card received"><div className="summary-label"><CircleDollarSign size={16} /> Pago no Mês</div><strong>{money.format(summary.totalPaidInMonth)}</strong></article>
+        <article className="summary-card received"><div className="summary-label"><CircleDollarSign size={16} /> Pago no MÃªs</div><strong>{money.format(summary.totalPaidInMonth)}</strong></article>
         <article className="summary-card overdue"><div className="summary-label"><TriangleAlert size={16} /> Vencido</div><strong>{money.format(summary.overdue)}</strong></article>
         <article className="summary-card due-soon"><div className="summary-label"><TriangleAlert size={16} /> Vence em 7 dias</div><strong>{money.format(summary.next7Days)}</strong></article>
       </section>
@@ -1189,13 +1226,10 @@ export function PayablesPage() {
         <div className="page-header-row">
           <div>
             <h3>Contas a Pagar</h3>
-            <p>Gestão de despesas, vencimentos e pagamentos</p>
+            <p>GestÃ£o de despesas, vencimentos e pagamentos</p>
           </div>
           <div className="header-actions">
             <button type="button" className="accent-btn" onClick={openCreateModal}><PlusCircle size={16} /> Nova Conta a Pagar</button>
-            <button type="button" className="ghost-btn" onClick={() => setShowImportDrawer(true)}>
-              <PanelRightOpen size={16} /> Importar do Estoque
-            </button>
             <button type="button" className="ghost-btn" onClick={() => setGroupByCategory((prev) => !prev)}>
               {groupByCategory ? 'Desagrupar por categoria' : 'Agrupar por categoria'}
             </button>
@@ -1203,7 +1237,7 @@ export function PayablesPage() {
         </div>
 
         <div className="receivable-filters payables-filters">
-          <label className="search-box"><Search size={16} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar por descrição, fornecedor, categoria ou centro de custo" /></label>
+          <label className="search-box"><Search size={16} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar por descriÃ§Ã£o, fornecedor, categoria ou centro de custo" /></label>
           <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}><option value="all">Todos os status</option><option value="pending">Pendente</option><option value="partial">Parcial</option><option value="paid">Pago</option><option value="overdue">Vencido</option><option value="cancelled">Cancelado</option></select>
           <input type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} />
           <input type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} />
@@ -1224,14 +1258,14 @@ export function PayablesPage() {
             <table>
               <thead>
                 <tr>
-                  <th><button className="sort-btn" onClick={() => toggleSort('description')}>Descrição</button></th>
+                  <th><button className="sort-btn" onClick={() => toggleSort('description')}>DescriÃ§Ã£o</button></th>
                   <th><button className="sort-btn" onClick={() => toggleSort('supplier_name')}>Fornecedor</button></th>
                   <th><button className="sort-btn" onClick={() => toggleSort('amount')}>Valor</button></th>
                   <th><button className="sort-btn" onClick={() => toggleSort('due_date')}>Vencimento</button></th>
                   <th><button className="sort-btn" onClick={() => toggleSort('status_display')}>Status</button></th>
                   <th><button className="sort-btn" onClick={() => toggleSort('category_name')}>Categoria</button></th>
                   <th><button className="sort-btn" onClick={() => toggleSort('cost_center_name')}>Centro de Custo</button></th>
-                  <th>Ações</th>
+                  <th>AÃ§Ãµes</th>
                 </tr>
               </thead>
 
@@ -1239,7 +1273,7 @@ export function PayablesPage() {
 
               {groupByCategory && groupedItems.map(([category, group]) => (
                 <tbody key={category}>
-                  <tr className="group-row"><td colSpan={8}><strong>{category}</strong> · {group.length} conta(s)</td></tr>
+                  <tr className="group-row"><td colSpan={8}><strong>{category}</strong> Â· {group.length} conta(s)</td></tr>
                   {group.map((item) => renderRow(item))}
                 </tbody>
               ))}
@@ -1250,8 +1284,8 @@ export function PayablesPage() {
         {!isLoading && filteredAndSorted.length > 0 && (
           <div className="pagination-row">
             <button className="ghost-btn" disabled={page <= 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Anterior</button>
-            <span>Página {Math.min(page, totalPages)} de {totalPages}</span>
-            <button className="ghost-btn" disabled={page >= totalPages} onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}>Próxima</button>
+            <span>PÃ¡gina {Math.min(page, totalPages)} de {totalPages}</span>
+            <button className="ghost-btn" disabled={page >= totalPages} onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}>PrÃ³xima</button>
           </div>
         )}
       </section>
@@ -1262,7 +1296,7 @@ export function PayablesPage() {
             <h3>{editingItem ? 'Editar Conta a Pagar' : 'Nova Conta a Pagar'}</h3>
 
             <label>
-              Descrição*
+              DescriÃ§Ã£o*
               <input {...payableForm.register('description')} />
               {payableForm.formState.errors.description && <small className="feedback error">{payableForm.formState.errors.description.message}</small>}
             </label>
@@ -1328,7 +1362,7 @@ export function PayablesPage() {
                   <>
                     <div className="modal-grid two-columns">
                       <label>
-                        Frequência
+                        FrequÃªncia
                         <select {...payableForm.register('recurrenceFrequency')}>
                           {recurrenceFrequencyOptions.map((option) => (<option key={option.value} value={option.value}>{option.label}</option>))}
                         </select>
@@ -1336,14 +1370,14 @@ export function PayablesPage() {
                       </label>
 
                       <label>
-                        Data de início
+                        Data de inÃ­cio
                         <input type="date" {...payableForm.register('recurrenceStartDate')} />
                         {payableForm.formState.errors.recurrenceStartDate && <small className="feedback error">{payableForm.formState.errors.recurrenceStartDate.message}</small>}
                       </label>
                     </div>
 
                     <label>
-                      Data de término (opcional)
+                      Data de tÃ©rmino (opcional)
                       <input type="date" {...payableForm.register('recurrenceEndDate')} />
                       {payableForm.formState.errors.recurrenceEndDate && <small className="feedback error">{payableForm.formState.errors.recurrenceEndDate.message}</small>}
                     </label>
@@ -1351,7 +1385,7 @@ export function PayablesPage() {
                     {recurrencePreviewDates.length > 0 && (
                       <div className="installment-preview">
                         <strong>
-                          Serão criadas {recurrencePreviewDates.length} parcela(s) entre{' '}
+                          SerÃ£o criadas {recurrencePreviewDates.length} parcela(s) entre{' '}
                           {new Date(`${recurrencePreviewDates[0]}T00:00:00`).toLocaleDateString('pt-BR')} e{' '}
                           {new Date(`${recurrencePreviewDates[recurrencePreviewDates.length - 1]}T00:00:00`).toLocaleDateString('pt-BR')}
                         </strong>
@@ -1363,7 +1397,7 @@ export function PayablesPage() {
             )}
 
             <label>
-              Observações
+              ObservaÃ§Ãµes
               <textarea rows={3} {...payableForm.register('notes')} />
             </label>
 
@@ -1371,7 +1405,7 @@ export function PayablesPage() {
 
             <div className="modal-actions">
               <button type="button" className="ghost-btn" onClick={() => { setShowFormModal(false); setEditingItem(null) }} disabled={isSavingForm}>Cancelar</button>
-              <button type="submit" className="accent-btn" disabled={isSavingForm}>{isSavingForm ? 'Salvando...' : editingItem ? 'Salvar Alterações' : 'Salvar Conta'}</button>
+              <button type="submit" className="accent-btn" disabled={isSavingForm}>{isSavingForm ? 'Salvando...' : editingItem ? 'Salvar AlteraÃ§Ãµes' : 'Salvar Conta'}</button>
             </div>
           </form>
         </div>
@@ -1399,7 +1433,7 @@ export function PayablesPage() {
             </div>
 
             <label>
-              Conta Bancária usada*
+              Conta BancÃ¡ria usada*
               <select {...paymentForm.register('accountId')}>
                 <option value="">Selecione...</option>
                 {accounts.map((account) => (<option key={account.id} value={account.id}>{account.name}</option>))}
@@ -1409,11 +1443,11 @@ export function PayablesPage() {
 
             <label>
               Comprovante
-              <input {...paymentForm.register('receiptReference')} placeholder="Número ou referência" />
+              <input {...paymentForm.register('receiptReference')} placeholder="NÃºmero ou referÃªncia" />
             </label>
 
             <label>
-              Observações
+              ObservaÃ§Ãµes
               <textarea rows={3} {...paymentForm.register('notes')} />
             </label>
 
@@ -1425,137 +1459,7 @@ export function PayablesPage() {
         </div>
       )}
 
-      {showImportDrawer && (
-        <>
-          <button className="drawer-backdrop" type="button" onClick={() => setShowImportDrawer(false)} aria-label="Fechar importação" />
-          <aside className="stock-import-drawer" aria-label="Importar do estoque">
-            <div className="drawer-header">
-              <h3>Importar do Estoque</h3>
-              <button type="button" className="icon-btn" onClick={() => setShowImportDrawer(false)}>
-                <X size={16} />
-              </button>
-            </div>
-
-            <div className="drawer-content">
-              <div className="drawer-block">
-                <strong>Filtros</strong>
-                <div className="drawer-filters">
-                  <input type="date" value={stockFromDate} onChange={(event) => setStockFromDate(event.target.value)} />
-                  <input type="date" value={stockToDate} onChange={(event) => setStockToDate(event.target.value)} />
-                  <select value={stockSupplierFilter} onChange={(event) => setStockSupplierFilter(event.target.value)}>
-                    <option value="all">Fornecedor</option>
-                    {stockSupplierOptions.map((supplier) => <option key={supplier} value={supplier}>{supplier}</option>)}
-                  </select>
-                  <select value={stockStatusFilter} onChange={(event) => setStockStatusFilter(event.target.value)}>
-                    <option value="all">Status da compra</option>
-                    {stockStatusOptions.map((status) => <option key={status} value={status}>{status}</option>)}
-                  </select>
-                </div>
-                <button type="button" className="ghost-btn" onClick={resetStockFilters}>Limpar filtros</button>
-              </div>
-
-              <div className="drawer-block">
-                <strong>Vencimento da importação</strong>
-                <div className="drawer-due-options">
-                  <label className="toggle-check">
-                    <input
-                      type="radio"
-                      checked={importDueMode === 'default'}
-                      onChange={() => setImportDueMode('default')}
-                    />
-                    Prazo padrão
-                  </label>
-                  {importDueMode === 'default' && (
-                    <input
-                      type="number"
-                      min={0}
-                      value={importDefaultDays}
-                      onChange={(event) => setImportDefaultDays(Number(event.target.value || DEFAULT_IMPORT_DUE_DAYS))}
-                    />
-                  )}
-
-                  <label className="toggle-check">
-                    <input
-                      type="radio"
-                      checked={importDueMode === 'custom'}
-                      onChange={() => setImportDueMode('custom')}
-                    />
-                    Data fixa
-                  </label>
-                  {importDueMode === 'custom' && (
-                    <input
-                      type="date"
-                      value={importCustomDueDate}
-                      onChange={(event) => setImportCustomDueDate(event.target.value)}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <div className="drawer-block">
-                <div className="drawer-list-header">
-                  <strong>Ordens do Estoque não importadas</strong>
-                  <button type="button" className="ghost-btn" onClick={toggleSelectAllFilteredStockOrders}>Selecionar visíveis</button>
-                </div>
-
-                {isLoadingStockOrders ? (
-                  <p className="muted">Carregando ordens...</p>
-                ) : filteredStockOrders.length === 0 ? (
-                  <p className="muted">Nenhuma ordem de compra pendente para importação.</p>
-                ) : (
-                  <div className="drawer-table-wrap">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th>Data</th>
-                          <th>Fornecedor</th>
-                          <th>Produtos</th>
-                          <th>Valor Total</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredStockOrders.map((order) => {
-                          const checked = selectedStockOrderIds.includes(order.id)
-                          return (
-                            <tr key={order.id}>
-                              <td>
-                                <input
-                                  type="checkbox"
-                                  checked={checked}
-                                  onChange={() => toggleStockSelection(order.id)}
-                                />
-                              </td>
-                              <td>{new Date(`${order.date}T00:00:00`).toLocaleDateString('pt-BR')}</td>
-                              <td>{order.supplierName}</td>
-                              <td>{order.productsSummary}</td>
-                              <td>{order.totalAmount > 0 ? money.format(order.totalAmount) : '-'}</td>
-                              <td>{order.status}</td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="drawer-footer">
-              <span>{selectedStockOrderIds.length} selecionada(s)</span>
-              <button
-                type="button"
-                className="accent-btn"
-                disabled={isImportingFromStock || selectedStockOrderIds.length === 0}
-                onClick={handleImportFromStock}
-              >
-                {isImportingFromStock ? 'Importando...' : 'Importar para Contas a Pagar'}
-              </button>
-            </div>
-          </aside>
-        </>
-      )}
     </div>
   )
 }
+

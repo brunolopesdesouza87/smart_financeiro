@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Check, CircleDollarSign, Clock3, Download, Pencil, PlusCircle, Search, TriangleAlert, Trash2 } from 'lucide-react'
+import { Check, CircleDollarSign, Clock3, Pencil, PlusCircle, Search, TriangleAlert, Trash2 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { z } from 'zod'
 import { supabase } from '../lib/supabase'
@@ -117,7 +117,6 @@ export function ReceivablesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [editingItem, setEditingItem] = useState<ReceivableSummary | null>(null)
   const [settleItem, setSettleItem] = useState<ReceivableSummary | null>(null)
-  const [isImporting, setIsImporting] = useState(false)
   const [isSavingForm, setIsSavingForm] = useState(false)
   const [isSettling, setIsSettling] = useState(false)
 
@@ -381,31 +380,22 @@ export function ReceivablesPage() {
     toast.success('Conta a receber excluída com sucesso.')
   }
 
-  const handleImportFromPDV = async () => {
-    if (!supabase) return
-    setIsImporting(true)
-    const { data: sales, error: salesError } = await supabase
-      .from('sales')
-      .select('id')
-      .order('created_at', { ascending: false })
-      .limit(100)
-
-    if (salesError) {
-      toast.error(`Erro ao buscar vendas do PDV: ${salesError.message}`)
-      setIsImporting(false)
-      return
+  // Sincronização automática silenciosa ao carregar a página
+  useEffect(() => {
+    const autoSync = async () => {
+      if (!supabase) return
+      const { data: sales } = await supabase
+        .from('sales')
+        .select('id')
+        .order('created_at', { ascending: false })
+        .limit(200)
+      for (const sale of sales || []) {
+        await supabase.rpc('fn_sync_sale_to_receivable', { p_sale_id: sale.id })
+      }
+      queryClient.invalidateQueries({ queryKey: ['receivables-summary'] })
     }
-
-    let imported = 0
-    for (const sale of sales || []) {
-      const { data, error } = await supabase.rpc('fn_sync_sale_to_receivable', { p_sale_id: sale.id })
-      if (!error) imported += Number(data || 0)
-    }
-
-    await queryClient.invalidateQueries({ queryKey: ['receivables-summary'] })
-    setIsImporting(false)
-    toast.success(`Importação concluída. ${imported} recebível(is) gerado(s).`)
-  }
+    autoSync()
+  }, [])
 
   const handleCreateOrEdit = createForm.handleSubmit(async (values) => {
     if (!supabase) return
@@ -643,9 +633,7 @@ export function ReceivablesPage() {
             <button className="accent-btn" type="button" onClick={openCreateModal}>
             <PlusCircle size={16} /> Novo Recebível
             </button>
-            <button className="primary import-btn" type="button" onClick={handleImportFromPDV} disabled={isImporting}>
-              <Download size={16} /> {isImporting ? 'Importando...' : 'Importar do PDV'}
-            </button>
+
           </div>
         </div>
 
