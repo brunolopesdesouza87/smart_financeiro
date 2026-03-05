@@ -16,6 +16,7 @@ interface CashEntry {
   type: 'in' | 'out'
   account_name: string | null
   category_name: string | null
+  source: 'manual' | 'receivable' | 'payable'
 }
 
 interface FinancialAccount {
@@ -60,33 +61,99 @@ const CashFlowPage: React.FC = () => {
     if (!supabase) return
     setLoading(true)
     try {
-      const [entriesRes, accountsRes] = await Promise.all([
+      const [cfeRes, recRes, payRes, accountsRes] = await Promise.all([
+        // lançamentos manuais de caixa
         supabase
           .from('cash_flow_entries')
-          .select('id, date, description, amount, type, financial_accounts(name), chart_of_accounts(name)')
+          .select('id, date, description, amount, type, account_id, category_id')
           .gte('date', dates.from)
           .lte('date', dates.to)
           .order('date', { ascending: false }),
+        // recebimentos confirmados no período
+        supabase
+          .from('receivables')
+          .select('id, description, amount_received, received_date, customer_name')
+          .in('status', ['received', 'partial'])
+          .gte('received_date', dates.from)
+          .lte('received_date', dates.to),
+        // pagamentos confirmados no período
+        supabase
+          .from('payables')
+          .select('id, description, amount_paid, paid_date, supplier_name')
+          .in('status', ['paid', 'partial'])
+          .gte('paid_date', dates.from)
+          .lte('paid_date', dates.to),
+        // contas financeiras (sem filtro active para não perder nada)
         supabase
           .from('financial_accounts')
           .select('id, name, type, balance')
-          .eq('active', true)
           .order('name'),
       ])
 
-      if (entriesRes.data) {
-        setEntries(
-          entriesRes.data.map((e: any) => ({
-            id: e.id,
-            date: e.date,
-            description: e.description,
-            amount: Number(e.amount),
-            type: e.type,
-            account_name: e.financial_accounts?.name ?? null,
-            category_name: e.chart_of_accounts?.name ?? null,
-          }))
-        )
+      if (cfeRes.error) console.warn('cash_flow_entries error:', cfeRes.error.message)
+      if (recRes.error) console.warn('receivables error:', recRes.error.message)
+      if (payRes.error) console.warn('payables error:', payRes.error.message)
+      if (accountsRes.error) console.warn('financial_accounts error:', accountsRes.error.message)
+
+      // Montar lista unificada de entradas
+      const combined: CashEntry[] = []
+
+      // 1) lançamentos manuais
+      for (const e of cfeRes.data ?? []) {
+        combined.push({
+          id: e.id,
+          date: e.date,
+          description: e.description,
+          amount: Number(e.amount),
+          type: e.type,
+          account_name: null,
+          category_name: null,
+          source: 'manual',
+        })
       }
+
+      // IDs já incluídos via cash_flow_entries (linked)
+      const cfeReceivableIds = new Set<string>()
+      const cfePayableIds = new Set<string>()
+
+      // 2) recebimentos de contas a receber (evitar duplicata se já tiver cfe)
+      for (const r of recRes.data ?? []) {
+        if (cfeReceivableIds.has(r.id)) continue
+        const amt = Number(r.amount_received ?? 0)
+        if (!amt || !r.received_date) continue
+        combined.push({
+          id: `rec-${r.id}`,
+          date: r.received_date,
+          description: r.description + (r.customer_name ? ` — ${r.customer_name}` : ''),
+          amount: amt,
+          type: 'in',
+          account_name: null,
+          category_name: null,
+          source: 'receivable',
+        })
+      }
+
+      // 3) pagamentos de contas a pagar (evitar duplicata se já tiver cfe)
+      for (const p of payRes.data ?? []) {
+        if (cfePayableIds.has(p.id)) continue
+        const amt = Number(p.amount_paid ?? 0)
+        if (!amt || !p.paid_date) continue
+        combined.push({
+          id: `pay-${p.id}`,
+          date: p.paid_date,
+          description: p.description + (p.supplier_name ? ` — ${p.supplier_name}` : ''),
+          amount: amt,
+          type: 'out',
+          account_name: null,
+          category_name: null,
+          source: 'payable',
+        })
+      }
+
+      // Ordenar por data desc
+      combined.sort((a, b) => b.date.localeCompare(a.date))
+      setEntries(combined)
+
       if (accountsRes.data) {
         setAccounts(accountsRes.data.map((a: any) => ({ ...a, balance: Number(a.balance) })))
       }
@@ -123,7 +190,6 @@ const CashFlowPage: React.FC = () => {
         amount,
         type: values.type,
         account_id: values.account_id ?? null,
-        notes: values.notes ?? null,
       })
       if (error) throw error
 
@@ -234,8 +300,7 @@ const CashFlowPage: React.FC = () => {
                 <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
                   <th style={{ textAlign: 'left', padding: '8px 12px', color: '#6b7fa3', fontWeight: 600 }}>Data</th>
                   <th style={{ textAlign: 'left', padding: '8px 12px', color: '#6b7fa3', fontWeight: 600 }}>Descrição</th>
-                  <th style={{ textAlign: 'left', padding: '8px 12px', color: '#6b7fa3', fontWeight: 600 }}>Conta</th>
-                  <th style={{ textAlign: 'left', padding: '8px 12px', color: '#6b7fa3', fontWeight: 600 }}>Categoria</th>
+                  <th style={{ textAlign: 'left', padding: '8px 12px', color: '#6b7fa3', fontWeight: 600 }}>Origem</th>
                   <th style={{ textAlign: 'left', padding: '8px 12px', color: '#6b7fa3', fontWeight: 600 }}>Tipo</th>
                   <th style={{ textAlign: 'right', padding: '8px 12px', color: '#6b7fa3', fontWeight: 600 }}>Valor</th>
                 </tr>
@@ -247,8 +312,16 @@ const CashFlowPage: React.FC = () => {
                       {new Date(e.date + 'T00:00:00').toLocaleDateString('pt-BR')}
                     </td>
                     <td style={{ padding: '10px 12px' }}>{e.description}</td>
-                    <td style={{ padding: '10px 12px', color: '#6b7fa3' }}>{e.account_name ?? '—'}</td>
-                    <td style={{ padding: '10px 12px', color: '#6b7fa3' }}>{e.category_name ?? '—'}</td>
+                    <td style={{ padding: '10px 12px' }}>
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center', padding: '2px 8px',
+                        borderRadius: 12, fontSize: 11, fontWeight: 600,
+                        background: e.source === 'receivable' ? '#e3f2fd' : e.source === 'payable' ? '#fff3e0' : '#f3e5f5',
+                        color: e.source === 'receivable' ? '#1565c0' : e.source === 'payable' ? '#e65100' : '#6a1b9a',
+                      }}>
+                        {e.source === 'receivable' ? 'Contas a Receber' : e.source === 'payable' ? 'Contas a Pagar' : 'Manual'}
+                      </span>
+                    </td>
                     <td style={{ padding: '10px 12px' }}>
                       <span style={{
                         display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px',
@@ -329,9 +402,6 @@ const CashFlowPage: React.FC = () => {
                 <Select.Option key={acc.id} value={acc.id}>{acc.name}</Select.Option>
               ))}
             </Select>
-          </Form.Item>
-          <Form.Item label="Observações" name="notes">
-            <Input.TextArea rows={2} maxLength={200} />
           </Form.Item>
         </Form>
       </Modal>
