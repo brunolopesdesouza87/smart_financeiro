@@ -3,10 +3,11 @@
   RewriteEngine On
   RewriteBase /
 
-  # Serve real files from dist/ (assets, index.html, vite.svg)
-  RewriteCond %{DOCUMENT_ROOT}/dist%{REQUEST_URI} -f
-  RewriteRule ^(.*)$ dist/$1 [L]
+  # Serve real files (including dist/assets/) directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
 
-  # Fallback: all routes -> dist/index.html (React Router SPA)
+  # All other routes -> dist/index.html (React Router SPA)
   RewriteRule ^ dist/index.html [L]
 </IfModule>
