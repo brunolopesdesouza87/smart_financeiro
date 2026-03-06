@@ -1,3 +1,10 @@
+# Fix MIME types for modern JS/CSS
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/css .css
+  AddType image/svg+xml .svg
+</IfModule>
+
 # Serve SPA from dist/ folder
 <IfModule mod_rewrite.c>
   RewriteEngine On
