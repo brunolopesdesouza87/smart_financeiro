@@ -99,7 +99,11 @@ const PlanoDeContasPage: React.FC = () => {
       setModalOpen(false)
       load()
     } catch (e: any) {
-      toast.error(e.message || 'Erro ao salvar.')
+      if (e.code === '23505' || (e.message && e.message.includes('unique constraint'))) {
+        toast.error('Já existe uma categoria com esse código. Use um código diferente.')
+      } else {
+        toast.error(e.message || 'Erro ao salvar.')
+      }
     } finally {
       setSaving(false)
     }
