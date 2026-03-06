@@ -1,8 +1,12 @@
-# Redireciona tudo para index.html para SPA
+# Serve SPA from dist/ folder
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^ index.html [L]
+
+  # Serve real files from dist/ (assets, index.html, vite.svg)
+  RewriteCond %{DOCUMENT_ROOT}/dist%{REQUEST_URI} -f
+  RewriteRule ^(.*)$ dist/$1 [L]
+
+  # Fallback: all routes -> dist/index.html (React Router SPA)
+  RewriteRule ^ dist/index.html [L]
 </IfModule>
