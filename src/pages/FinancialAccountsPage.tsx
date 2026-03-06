@@ -17,7 +17,7 @@ interface FinancialAccount {
 const TYPE_LABELS: Record<string, string> = {
   bank: 'Banco',
   cash: 'Caixa',
-  credit_card: 'Cartão de Crédito',
+  credit_card: 'CartÃ£o de CrÃ©dito',
   digital: 'Carteira Digital',
 }
 
@@ -111,7 +111,7 @@ const FinancialAccountsPage: React.FC = () => {
     if (!confirm(`Excluir a conta "${acc.name}"?`)) return
     const { error } = await supabase.from('financial_accounts').delete().eq('id', acc.id)
     if (error) { toast.error(error.message); return }
-    toast.success('Conta excluída!')
+    toast.success('Conta excluÃ­da!')
     load()
   }
 
@@ -121,7 +121,7 @@ const FinancialAccountsPage: React.FC = () => {
     <div style={{ padding: 24 }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#18314f' }}>Contas Bancárias e Financeiras</h2>
+        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#18314f' }}>Contas BancÃ¡rias e Financeiras</h2>
         <button onClick={openCreate} style={{ background: '#1e3a5f', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>
           + Nova Conta
         </button>
@@ -139,7 +139,7 @@ const FinancialAccountsPage: React.FC = () => {
       {loading ? (
         <div style={{ textAlign: 'center', padding: 48, color: '#888' }}>Carregando...</div>
       ) : data.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: 48, color: '#888' }}>Nenhuma conta cadastrada. Clique em "+ Nova Conta" para começar.</div>
+        <div style={{ textAlign: 'center', padding: 48, color: '#888' }}>Nenhuma conta cadastrada. Clique em "+ Nova Conta" para comeÃ§ar.</div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, marginBottom: 32 }}>
           {data.map(acc => (
@@ -154,7 +154,7 @@ const FinancialAccountsPage: React.FC = () => {
               {acc.bank_name && <div style={{ fontSize: 12, color: '#6b7fa3', marginBottom: 2 }}>{acc.bank_name}</div>}
               {(acc.agency || acc.account_number) && (
                 <div style={{ fontSize: 12, color: '#6b7fa3', marginBottom: 8 }}>
-                  {acc.agency && `Ag: ${acc.agency}`}{acc.agency && acc.account_number && ' · '}{acc.account_number && `Cc: ${acc.account_number}`}
+                  {acc.agency && `Ag: ${acc.agency}`}{acc.agency && acc.account_number && ' Â· '}{acc.account_number && `Cc: ${acc.account_number}`}
                 </div>
               )}
               <div style={{ fontSize: 22, fontWeight: 700, color: acc.balance >= 0 ? '#27ae60' : '#e74c3c', margin: '10px 0' }}>
@@ -188,7 +188,7 @@ const FinancialAccountsPage: React.FC = () => {
                 <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as any }))} style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #d6deea', fontSize: 14, boxSizing: 'border-box' }}>
                   <option value="bank">Banco</option>
                   <option value="cash">Caixa</option>
-                  <option value="credit_card">Cartão de Crédito</option>
+                  <option value="credit_card">CartÃ£o de CrÃ©dito</option>
                   <option value="digital">Carteira Digital</option>
                 </select>
               </div>
@@ -200,16 +200,16 @@ const FinancialAccountsPage: React.FC = () => {
 
               <div>
                 <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, color: '#18314f', fontSize: 13 }}>Nome do Banco</label>
-                <input value={form.bank_name} onChange={e => setForm(f => ({ ...f, bank_name: e.target.value }))} placeholder="Ex: Bradesco, Itaú..." style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #d6deea', fontSize: 14, boxSizing: 'border-box' }} />
+                <input value={form.bank_name} onChange={e => setForm(f => ({ ...f, bank_name: e.target.value }))} placeholder="Ex: Bradesco, ItaÃº..." style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #d6deea', fontSize: 14, boxSizing: 'border-box' }} />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, color: '#18314f', fontSize: 13 }}>Agência</label>
+                <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, color: '#18314f', fontSize: 13 }}>AgÃªncia</label>
                 <input value={form.agency} onChange={e => setForm(f => ({ ...f, agency: e.target.value }))} placeholder="0000" style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #d6deea', fontSize: 14, boxSizing: 'border-box' }} />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, color: '#18314f', fontSize: 13 }}>Número da Conta</label>
+                <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, color: '#18314f', fontSize: 13 }}>NÃºmero da Conta</label>
                 <input value={form.account_number} onChange={e => setForm(f => ({ ...f, account_number: e.target.value }))} placeholder="00000-0" style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #d6deea', fontSize: 14, boxSizing: 'border-box' }} />
               </div>
             </div>
@@ -232,4 +232,4 @@ const FinancialAccountsPage: React.FC = () => {
   )
 }
 
-export default FinancialAccountsPage
+export default FinancialAccountsPage
