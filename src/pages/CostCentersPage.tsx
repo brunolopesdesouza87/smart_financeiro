@@ -114,7 +114,7 @@ const CostCentersPage: React.FC = () => {
           <thead>
             <tr style={{ background: '#f4f7fb' }}>
               <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#18314f', fontSize: 13 }}>Nome</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#18314f', fontSize: 13 }}>Descri��o</th>
+              <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#18314f', fontSize: 13 }}>Descrição</th>
               <th style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 600, color: '#18314f', fontSize: 13 }}>Status</th>
               <th style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 600, color: '#18314f', fontSize: 13 }}>A��es</th>
             </tr>
@@ -162,11 +162,11 @@ const CostCentersPage: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, color: '#18314f', fontSize: 13 }}>Descri��o</label>
+              <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, color: '#18314f', fontSize: 13 }}>Descrição</label>
               <textarea
                 value={form.description}
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                placeholder="Descri��o opcional..."
+                placeholder="Descrição opcional..."
                 rows={3}
                 style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #d6deea', fontSize: 14, boxSizing: 'border-box', resize: 'vertical' }}
               />
