@@ -5,16 +5,11 @@
   AddType image/svg+xml .svg
 </IfModule>
 
-# Serve SPA from dist/ folder
+# SPA - redirect all non-file routes to index.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-
-  # Serve real files (including dist/assets/) directly
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
-
-  # All other routes -> dist/index.html (React Router SPA)
-  RewriteRule ^ dist/index.html [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
 </IfModule>
