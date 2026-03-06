@@ -116,7 +116,7 @@ const CostCentersPage: React.FC = () => {
               <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#18314f', fontSize: 13 }}>Nome</th>
               <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#18314f', fontSize: 13 }}>Descrição</th>
               <th style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 600, color: '#18314f', fontSize: 13 }}>Status</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 600, color: '#18314f', fontSize: 13 }}>A��es</th>
+              <th style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 600, color: '#18314f', fontSize: 13 }}>Ações</th>
             </tr>
           </thead>
           <tbody>
