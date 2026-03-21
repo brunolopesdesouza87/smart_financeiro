@@ -183,7 +183,7 @@ const CostCentersPage: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
-              <button onClick={() => setModalOpen(false)} style={{ padding: '8px 20px', borderRadius: 8, border: '1px solid #d6deea', background: '#fff', cursor: 'pointer', fontWeight: 600, color: '#6b7fa3' }}>
+              <button onClick={() => setModalOpen(false)} className="danger-btn">
                 Cancelar
               </button>
               <button onClick={handleSave} disabled={saving} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: '#1e3a5f', color: '#fff', cursor: saving ? 'not-allowed' : 'pointer', fontWeight: 600, opacity: saving ? 0.7 : 1 }}>

@@ -130,21 +130,33 @@ const payableFormSchema = z
 
     mode: z.enum(['create', 'edit']),
 
-    description: z.string().trim().min(1, 'Descri��o � obrigat�ria.'),
+    description: z.string().trim().min(1, 'Descrição é obrigatória.'),
 
     supplierName: z.string().optional(),
 
-    amount: z.string().min(1, 'Valor � obrigat�rio.'),
+    amount: z.string().min(1, 'Valor é obrigatório.'),
 
-    dueDate: z.string().min(1, 'Data de vencimento � obrigat�ria.'),
+    dueDate: z.string().min(1, 'Data de vencimento é obrigatória.'),
 
-    categoryId: z.string().min(1, 'Categoria � obrigat�ria.'),
+    categoryId: z.string().min(1, 'Categoria é obrigatória.'),
 
     costCenterId: z.string().optional(),
 
     paymentAccountId: z.string().optional(),
 
     notes: z.string().optional(),
+
+    nfeNumber: z.string().optional(),
+
+    nfeSerie: z.string().optional(),
+
+    nfeEmissionDate: z.string().optional(),
+
+    nfeAccessKey: z.string().optional(),
+
+    nfeIssuerCnpj: z.string().optional(),
+
+    nfeTotalValue: z.string().optional(),
 
     isRecurring: z.boolean(),
 
@@ -176,7 +188,7 @@ const payableFormSchema = z
 
         path: ['dueDate'],
 
-        message: 'A data de vencimento n�o pode ser no passado para novos registros.',
+        message: 'A data de vencimento não pode ser no passado para novos registros.',
 
       })
 
@@ -210,7 +222,7 @@ const payableFormSchema = z
 
           path: ['recurrenceStartDate'],
 
-          message: 'Data de in�cio � obrigat�ria para despesa recorrente.',
+          message: 'Data de início é obrigatória para despesa recorrente.',
 
         })
 
@@ -256,11 +268,11 @@ const payableFormSchema = z
 
 const paymentFormSchema = z.object({
 
-  paidAmount: z.string().min(1, 'Valor pago � obrigat�rio.'),
+  paidAmount: z.string().min(1, 'Valor pago é obrigatório.'),
 
-  paidDate: z.string().min(1, 'Data do pagamento � obrigat�ria.'),
+  paidDate: z.string().min(1, 'Data do pagamento é obrigatória.'),
 
-  accountId: z.string().min(1, 'Conta banc�ria � obrigat�ria.'),
+  accountId: z.string().min(1, 'Conta bancária é obrigatória.'),
 
   receiptReference: z.string().optional(),
 
@@ -1472,7 +1484,7 @@ export function PayablesPage() {
 
     if (importDueMode === 'custom' && !importCustomDueDate) {
 
-      toast.error('Informe a data de vencimento para importa��o com data fixa.')
+      toast.error('Informe a data de vencimento para importação com data fixa.')
 
       return
 
@@ -1578,19 +1590,19 @@ export function PayablesPage() {
 
       if (successCount > 0) {
 
-        toast.success(`Importa��o conclu�da: ${successCount} ordem(ns) importada(s).`)
+        toast.success(`Importação concluída: ${successCount} ordem(ns) importada(s).`)
 
       }
 
       if (skippedCount > 0) {
 
-        toast.error(`${skippedCount} ordem(ns) n�o foram importadas (sem valor total ou erro de grava��o).`)
+        toast.error(`${skippedCount} ordem(ns) não foram importadas (sem valor total ou erro de gravação).`)
 
       }
 
       if (markNotUpdatedCount > 0) {
 
-        toast.error(`${markNotUpdatedCount} ordem(ns) importada(s) sem flag de origem atualizada no estoque (ajuste de schema pode ser necess�rio).`)
+        toast.error(`${markNotUpdatedCount} ordem(ns) importada(s) sem flag de origem atualizada no estoque (ajuste de schema pode ser necessário).`)
 
       }
 
@@ -1734,7 +1746,7 @@ export function PayablesPage() {
 
       .from('payables')
 
-      .select('description, supplier_name, amount, due_date, category_id, cost_center_id, account_id, notes, recurrent, recurrence_period')
+      .select('description, supplier_name, amount, due_date, category_id, cost_center_id, account_id, notes, nfe_number, nfe_serie, nfe_emission_date, nfe_access_key, nfe_issuer_cnpj, nfe_total_value, recurrent, recurrence_period')
 
       .eq('id', item.id)
 
@@ -1773,6 +1785,18 @@ export function PayablesPage() {
       paymentAccountId: data.account_id || '',
 
       notes: data.notes || '',
+
+      nfeNumber: data.nfe_number || '',
+
+      nfeSerie: data.nfe_serie || '',
+
+      nfeEmissionDate: data.nfe_emission_date || '',
+
+      nfeAccessKey: data.nfe_access_key || '',
+
+      nfeIssuerCnpj: data.nfe_issuer_cnpj || '',
+
+      nfeTotalValue: data.nfe_total_value ? String(data.nfe_total_value) : '',
 
       isRecurring: Boolean(data.recurrent),
 
@@ -1890,6 +1914,18 @@ export function PayablesPage() {
 
             notes: values.notes?.trim() || null,
 
+            nfe_number: values.nfeNumber?.trim() || null,
+
+            nfe_serie: values.nfeSerie?.trim() || null,
+
+            nfe_emission_date: values.nfeEmissionDate || null,
+
+            nfe_access_key: values.nfeAccessKey?.trim() || null,
+
+            nfe_issuer_cnpj: values.nfeIssuerCnpj?.trim() || null,
+
+            nfe_total_value: values.nfeTotalValue ? parseCurrencyInput(values.nfeTotalValue) : null,
+
             recurrent: Boolean(values.isRecurring),
 
             recurrence_period: values.isRecurring ? recurrenceFrequency : null,
@@ -1975,6 +2011,18 @@ export function PayablesPage() {
               account_id: values.paymentAccountId || null,
 
               notes: values.notes?.trim() || null,
+
+              nfe_number: values.nfeNumber?.trim() || null,
+
+              nfe_serie: values.nfeSerie?.trim() || null,
+
+              nfe_emission_date: values.nfeEmissionDate || null,
+
+              nfe_access_key: values.nfeAccessKey?.trim() || null,
+
+              nfe_issuer_cnpj: values.nfeIssuerCnpj?.trim() || null,
+
+              nfe_total_value: values.nfeTotalValue ? parseCurrencyInput(values.nfeTotalValue) : null,
 
               status: 'pending',
 
@@ -2476,7 +2524,7 @@ export function PayablesPage() {
 
         <div className="receivable-filters payables-filters">
 
-          <label className="search-box"><Search size={16} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar por descri��o, fornecedor, categoria ou centro de custo" /></label>
+          <label className="search-box"><Search size={16} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar por descrição, fornecedor, categoria ou centro de custo" /></label>
 
           <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}><option value="all">Todos os status</option><option value="pending">Pendente</option><option value="partial">Parcial</option><option value="paid">Pago</option><option value="overdue">Vencido</option><option value="cancelled">Cancelado</option></select>
 
@@ -2518,7 +2566,7 @@ export function PayablesPage() {
 
                 <tr>
 
-                  <th><button className="sort-btn" onClick={() => toggleSort('description')}>Descri��o</button></th>
+                  <th><button className="sort-btn" onClick={() => toggleSort('description')}>Descrição</button></th>
 
                   <th><button className="sort-btn" onClick={() => toggleSort('supplier_name')}>Fornecedor</button></th>
 
@@ -2532,7 +2580,7 @@ export function PayablesPage() {
 
                   <th><button className="sort-btn" onClick={() => toggleSort('cost_center_name')}>Centro de Custo</button></th>
 
-                  <th>A�ões</th>
+                  <th>Ações</th>
 
                 </tr>
 
@@ -2594,7 +2642,8 @@ export function PayablesPage() {
 
             <label>
 
-              Descri��o*
+              {/* Descrição do lançamento */}
+              Descrição*
 
               <input {...payableForm.register('description')} />
 
@@ -2726,7 +2775,7 @@ export function PayablesPage() {
 
                       <label>
 
-                        Frequ�ncia
+                        Frequência
 
                         <select {...payableForm.register('recurrenceFrequency')}>
 
@@ -2742,7 +2791,7 @@ export function PayablesPage() {
 
                       <label>
 
-                        Data de in�cio
+                        Data de início
 
                         <input type="date" {...payableForm.register('recurrenceStartDate')} />
 
@@ -2756,7 +2805,7 @@ export function PayablesPage() {
 
                     <label>
 
-                      Data de t�rmino (opcional)
+                      Data de término (opcional)
 
                       <input type="date" {...payableForm.register('recurrenceEndDate')} />
 
@@ -2772,7 +2821,7 @@ export function PayablesPage() {
 
                         <strong>
 
-                          Ser�o criadas {recurrencePreviewDates.length} parcela(s) entre{' '}
+                          Serão criadas {recurrencePreviewDates.length} parcela(s) entre{' '}
 
                           {new Date(`${recurrencePreviewDates[0]}T00:00:00`).toLocaleDateString('pt-BR')} e{' '}
 
@@ -2794,9 +2843,68 @@ export function PayablesPage() {
 
 
 
+            <h4 className="muted">Dados da NFe</h4>
+
+            <div className="modal-grid two-columns">
+
+              <label>
+
+                Número da NFe
+
+                <input {...payableForm.register('nfeNumber')} placeholder="Ex: 000123456" />
+
+              </label>
+
+              <label>
+
+                Série
+
+                <input {...payableForm.register('nfeSerie')} placeholder="Ex: 1" />
+
+              </label>
+
+            </div>
+
+            <div className="modal-grid two-columns">
+
+              <label>
+
+                Data de Emissão
+
+                <input type="date" {...payableForm.register('nfeEmissionDate')} />
+
+              </label>
+
+              <label>
+
+                Valor Total da NFe
+
+                <input {...payableForm.register('nfeTotalValue')} inputMode="numeric" placeholder="0,00" onChange={(e) => payableForm.setValue('nfeTotalValue', formatCurrencyInput(e.target.value))} />
+
+              </label>
+
+            </div>
+
             <label>
 
-              Observa�ões
+              CNPJ do Emitente
+
+              <input {...payableForm.register('nfeIssuerCnpj')} placeholder="Ex: 00.000.000/0001-00" />
+
+            </label>
+
+            <label>
+
+              Chave de Acesso (44 dígitos)
+
+              <input {...payableForm.register('nfeAccessKey')} placeholder="Ex: 35250312345678000195550010000012341234567890" maxLength={44} />
+
+            </label>
+
+            <label>
+
+              {/* Observações do lançamento */}
+              Observações
 
               <textarea rows={3} {...payableForm.register('notes')} />
 
@@ -2810,9 +2918,9 @@ export function PayablesPage() {
 
             <div className="modal-actions">
 
-              <button type="button" className="ghost-btn" onClick={() => { setShowFormModal(false); setEditingItem(null) }} disabled={isSavingForm}>Cancelar</button>
+              <button type="button" className="danger-btn" onClick={() => { setShowFormModal(false); setEditingItem(null) }} disabled={isSavingForm}>Cancelar</button>
 
-              <button type="submit" className="accent-btn" disabled={isSavingForm}>{isSavingForm ? 'Salvando...' : editingItem ? 'Salvar Altera�ões' : 'Salvar Conta'}</button>
+              <button type="submit" className="accent-btn" disabled={isSavingForm}>{isSavingForm ? 'Salvando...' : editingItem ? 'Salvar Alterações' : 'Salvar Conta'}</button>
 
             </div>
 
@@ -2868,7 +2976,7 @@ export function PayablesPage() {
 
             <label>
 
-              Conta Banc�ria usada*
+              Conta Bancária usada*
 
               <select {...paymentForm.register('accountId')}>
 
@@ -2888,7 +2996,7 @@ export function PayablesPage() {
 
               Comprovante
 
-              <input {...paymentForm.register('receiptReference')} placeholder="N�mero ou refer�ncia" />
+              <input {...paymentForm.register('receiptReference')} placeholder="Número ou referência" />
 
             </label>
 
@@ -2896,7 +3004,8 @@ export function PayablesPage() {
 
             <label>
 
-              Observa�ões
+              {/* Observações do pagamento */}
+              Observações
 
               <textarea rows={3} {...paymentForm.register('notes')} />
 
@@ -2906,7 +3015,7 @@ export function PayablesPage() {
 
             <div className="modal-actions">
 
-              <button type="button" className="ghost-btn" onClick={() => setPayingItem(null)} disabled={isProcessingPayment}>Cancelar</button>
+              <button type="button" className="danger-btn" onClick={() => setPayingItem(null)} disabled={isProcessingPayment}>Cancelar</button>
 
               <button type="submit" className="accent-btn" disabled={isProcessingPayment}>{isProcessingPayment ? 'Processando...' : 'Confirmar Pagamento'}</button>
 

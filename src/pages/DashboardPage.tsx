@@ -113,10 +113,10 @@ const DashboardPage: React.FC = () => {
   const margemPct = data.faturamentoMes > 0 ? Math.round((lucroMes / data.faturamentoMes) * 100) : 0
 
   const kpis = [
-    { label: 'Saldo Total em Caixa', value: money.format(data.totalBalance), icon: <DollarSign size={32} color="#1677ff" /> },
-    { label: 'Faturamento do Mês', value: money.format(data.faturamentoMes), icon: <TrendingUp size={32} color="#52c41a" /> },
-    { label: 'Despesas do Mês', value: money.format(data.despesasMes), icon: <TrendingDown size={32} color="#ff4d4f" /> },
-    { label: 'Lucro do Mês', value: money.format(lucroMes), icon: <DollarSign size={32} color="#13c2c2" />, extra: <Tag color={lucroMes >= 0 ? 'green' : 'red'}>Margem {margemPct}%</Tag> },
+    { label: 'Saldo Total em Caixa', value: money.format(data.totalBalance), icon: <DollarSign size={32} color="#fff" />, bg: '#1677ff' },
+    { label: 'Faturamento do Mês', value: money.format(data.faturamentoMes), icon: <TrendingUp size={32} color="#fff" />, bg: '#52c41a' },
+    { label: 'Despesas do Mês', value: money.format(data.despesasMes), icon: <TrendingDown size={32} color="#fff" />, bg: '#ff4d4f' },
+    { label: 'Lucro do Mês', value: money.format(lucroMes), icon: <DollarSign size={32} color="#fff" />, bg: '#faad14', extra: <Tag color={lucroMes >= 0 ? 'green' : 'red'}>Margem {margemPct}%</Tag> },
   ]
 
   const alerts = [
@@ -160,16 +160,14 @@ const DashboardPage: React.FC = () => {
         {kpis.map((kpi, i) => (
           <Col span={6} key={i}>
             <Skeleton loading={loading} active>
-              <Card className="kpi-card" bordered={false} style={{ minHeight: 120 }}>
-                <Row align="middle" gutter={16}>
-                  <Col>{kpi.icon}</Col>
-                  <Col flex="auto">
-                    <div className="kpi-label">{kpi.label}</div>
-                    <div className="kpi-value" style={{ fontSize: 24, fontWeight: 700 }}>{kpi.value}</div>
-                    {kpi.extra}
-                  </Col>
-                </Row>
-              </Card>
+              <div style={{ minHeight: 120, background: kpi.bg, borderRadius: 8, padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+                <div>{kpi.icon}</div>
+                <div>
+                  <div style={{ color: '#fff', opacity: 0.85, fontSize: 14 }}>{kpi.label}</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: '#fff' }}>{kpi.value}</div>
+                  {kpi.extra}
+                </div>
+              </div>
             </Skeleton>
           </Col>
         ))}

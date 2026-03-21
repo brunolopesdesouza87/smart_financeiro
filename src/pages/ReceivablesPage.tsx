@@ -861,7 +861,7 @@ export function ReceivablesPage() {
             <div className="modal-actions">
               <button
                 type="button"
-                className="ghost-btn"
+                className="danger-btn"
                 onClick={() => {
                   setShowCreateModal(false)
                   setEditingItem(null)
@@ -931,7 +931,7 @@ export function ReceivablesPage() {
             </label>
 
             <div className="modal-actions">
-              <button type="button" className="ghost-btn" onClick={() => setSettleItem(null)} disabled={isSettling}>Cancelar</button>
+              <button type="button" className="danger-btn" onClick={() => setSettleItem(null)} disabled={isSettling}>Cancelar</button>
               <button type="submit" className="accent-btn" disabled={isSettling}>{isSettling ? 'Processando...' : 'Confirmar Baixa'}</button>
             </div>
           </form>

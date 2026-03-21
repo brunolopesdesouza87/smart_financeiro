@@ -282,7 +282,7 @@ const PlanoDeContasPage: React.FC = () => {
               </label>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 24 }}>
-              <button type="button" className="ghost-btn" onClick={() => setModalOpen(false)}>Cancelar</button>
+              <button type="button" className="danger-btn" onClick={() => setModalOpen(false)}>Cancelar</button>
               <button type="button" className="accent-btn" onClick={handleSave} disabled={saving}>
                 {saving ? 'Salvando...' : editingId ? 'Salvar' : 'Criar'}
               </button>
